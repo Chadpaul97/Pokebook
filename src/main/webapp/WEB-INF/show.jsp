@@ -20,10 +20,10 @@
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     crossorigin="anonymous">
 </head>
-<body class="p-3 mb-2 bg-white ">
-   <div class="container">
-       <h1>All Expenses</h1>
-       <a href="/expense/new">Add new Expense</a>
+<body>
+    <div class="container"> <!-- Beginning of Container -->
+        <h1>One Expense</h1>
+        <a href="/pokebook">Main Page</a>
 		<table  class="table table-dark">
 		    <thead>
 		        <tr>
@@ -32,27 +32,19 @@
 		            <th scope="col">Vendor</th>
 		            <th scope="col">Amount</th>
 		            <th scope="col">Description</th>
-		            <th scope="col">Actions</th>
 		        </tr>
 		    </thead>
 		    <tbody>
 		    
-		    	<c:forEach var = "i" items = "${expenses}" >
+		    	
 		    		<tr>
-		    			<td> <c:out value="${i.id}"></c:out></td>
-		    			<td> <c:out value="${i.name}"></c:out></td>
-		    			<td> <c:out value="${i.vendor}"></c:out></td>
-		    			<td> $<c:out value="${i.amount}"></c:out></td>
-		    			<td> <c:out value="${i.description}"></c:out></td>
-		    			<td> <a href="/expense/${i.id}" >Show </a> || <a href="/expenses/${i.id}/edit" > Edit </a> || <form action="/expense/delete/${i.id}" method="post">
-    <input type="hidden" name="_method" value="delete">
-    <input type="submit" value="Delete">
-</form></td>
+		    			<td> <c:out value="${expense.id}"></c:out></td>
+		    			<td> <c:out value="${expense.name}"></c:out></td>
+		    			<td> <c:out value="${expense.vendor}"></c:out></td>
+		    			<td> <c:out value="${expense.amount}"></c:out></td>
+		    			<td> <c:out value="${expense.description}"></c:out></td>
 		    		</tr>
-		    		
 		    	
-		    	
-		    	</c:forEach>
 		    	
 		         <!-- loop over all the books to show the details as in the wireframe! -->
 		    </tbody>

@@ -7,12 +7,12 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 import com.codingdojo.pokebook.models.Expense;
 import com.codingdojo.pokebook.services.PokeBookService;
@@ -49,35 +49,42 @@ public class HomeController {
 	    }
 	    
 	    
-	    //find one expense
+	    //FIND ONE EXPENSE
 	    @RequestMapping("/api/expense/{id}")
 	    public Expense show(@PathVariable("id") Long id) {
 	    	Expense book = pokebookService.findExpense(id);
 	        return book;
 	    }
 	    
-	  //update one expense
-	    @RequestMapping(value="/api/books/{id}", method=RequestMethod.PUT)
-	    public Expense update(
-	    		@PathVariable("id") Long id, 
-	    		@RequestParam(value="name") String name, 
-	    		@RequestParam(value="vendor") String vendor, 
-	    		@RequestParam(value="amount") Double amount,
-	    		@RequestParam(value="description") String description){
-	    	
-	    	Expense book = new Expense(name,vendor,amount,description);
-	    	book.setId(id); 
-	    	
-	        book = pokebookService.updateExpense(book);
-	        
-	        return book;
+	  //UPDATE EXPENSE
+	    
+	    @RequestMapping("/expenses/{id}/edit")
+	    public String edit(@PathVariable("id") Long id, Model model) {
+	    	Expense expense = pokebookService.findExpense(id);
+	        model.addAttribute("expense",expense);
+	        return "edit.jsp";
 	    }
 	    
-	    @RequestMapping(value="/api/books/{id}", method=RequestMethod.DELETE)
-	    public void destroy(@PathVariable("id") Long id) {
+	    @RequestMapping(value="/expenses/{id}", method=RequestMethod.PUT)
+	    public String update(@Valid @ModelAttribute("expense") Expense expense, BindingResult result) {
+	        if (result.hasErrors()) {
+	            return "edit.jsp";
+	        } else {
+	        	pokebookService.updateExpense(expense);
+	            return "redirect:/pokebook";
+	        }
+	    }
+	    
+	    //DELETE EXPENSE
+	    @RequestMapping(value="/expense/delete/{id}", method=RequestMethod.DELETE)
+	    public String destroy(@PathVariable("id") Long id) {
 	    	pokebookService.deleteExpense(id);
+	    	return "redirect:/pokebook";
+	    	
 	    }
 	    
+	    
+	    //NEW EXPENSE
 	    @RequestMapping("/expense/new")
 	    public String newExpense(@ModelAttribute("expense") Expense expense) {
 	        return "newexpense.jsp";
@@ -91,4 +98,16 @@ public class HomeController {
 	            return "redirect:/pokebook";
 	        }
 	    }
+	    
+	    
+		///ONE EXPENSE
+		@GetMapping("/expense/{expenseId}")
+		public String oneexpense(Model model,@PathVariable("expenseId") Long expenseId) {
+		
+			Expense expense = pokebookService.findExpense(expenseId);
+			
+			model.addAttribute("expense",expense);
+			
+			return "show.jsp";
+		}
 }
